@@ -1,0 +1,7 @@
+pykafka
+avro-python3
+requests
+feedparser
+osint-python-test-bed-adapter
+osint-python-starter-service
+textstat

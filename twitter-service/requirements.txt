@@ -1,0 +1,14 @@
+requests
+typing_extensions
+urllib3
+avro-python3
+osint-python-test-bed-adapter
+pykafka
+sqlalchemy
+uuid
+environs
+cryptography
+telethon
+Pillow
+snscrape
+pycron

@@ -1,2 +1,2 @@
-# team-iteam-a
-i-Team A
+# Overview of the solution by i-Team A
+
