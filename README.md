@@ -1,2 +1,90 @@
-# Overview of the solution by i-Team A
+# Overview of the solution by i-Team A: Disinformation Analyzer
 
+## Problem
+
+Josep Borrell, High Representative/Vice-President, adequately described the problem as follows: _“We have to focus on foreign actors who intentionally, in a coordinated manner, try to manipulate our information environment. We need to work with democratic partners around the world to fight information manipulation by authoritarian regimes more actively. It is time to roll up our sleeves and defend democracy, both at home and around the world.”_ [source: FIMI](https://www.eeas.europa.eu/eeas/1st-eeas-report-foreign-information-manipulation-and-interference-threats_en). So, for this challenge, the focus is on calculating the credibility that a news article or social media message represents true information, and not disinformation.
+
+## Methodology
+
+The approach that is followed can be split into 4 stages, and each stage is discussed in more detail below:
+
+1. Collect relevant content.
+2. Enrich that content using ML.
+3. Add vector embeddings to the content for semantic analysis and store the content.
+4. Analyse the content, automatically and/or manually.
+
+Next, the implementation is discussed: it is based on the open source event streaming platform, [Apache Kafka](https://kafka.apache.org), which is used to connect many micro-services that enrich the content. In the context of this hackathon, a part of this solution is shared - the full solution is, in principle, available to NATO-affiliated government organisations, so please reach out to us to discuss it.
+
+Subsequently, the results are explained. Based on the data in this repository, a user can play with the provided content in the database, either by querying it using GraphQL, or by running a Jupyter notebook. In the full solution, a GUI can be used that is more powerful, but not part of the released software (see the comment above).
+
+### Collecting content
+
+Analysts are in the best position to determine what information sources contain the most relevant content: RSS feeds, websites, telegram channels, twitter hashtags, etc. They can specify them in the GUI (not included), including their refresh rate. Alternatively, they can upload their own URLs manually or via a script.
+
+The provided dataset contains, for example, data from the provided CSVs, but also from TASS, [EMM (Europe Media Monitor)](https://emm.newsbrief.eu/NewsBrief/clusteredition/en/latest.html), Google News, New York Times, and several others.
+
+INCLUDE SCREENSHOT OF THE GUI WHERE YOU SPECIFY THE FEEDS
+
+When the relevant channels are specified, the configuration is published to Kafka, and the crawlers and scrapers start to collect content. In case of RSS feeds, the RSS crawlers first analyse the RSS feed for new content, and subsequently publish the new article links to Kafka. In the complete framework, there are many scrapers, e.g. for generic websites, dedicated websites, telegram, and twitter. The twitter service, that was developed during the hackathon, is available in the `twitter-service`, and it should provide an example of how easy it is to add a new service. Discovered content, be it text or images, are published by the scrapers to Kafka as well, so the content can be processed in the next stage.
+
+### Processing content
+
+When the article content is available, many NLP microservices start to work in parallel to enrich the retrieved articles. To name a few:
+
+- Language detection & translation using FRENK and LibreTranslate
+- Summarizing
+- Named Entity Recognition (+keywords)
+- Geo-tagging
+- Face detection
+- Sentiment & Emotion score
+- Readability score
+- Sarcasm/joke score
+- Topic detection: Louvain algorithm
+- Channel affiliation & credibility: NATO list?
+- Semantic word embeddings in Weaviate: `semitechnologies/transformers-inference:sentence-transformers-paraphrase-multilingual-mpnet-base-v2`
+- Semantic image embeddings in Weaviate: `semitechnologies/img2vec-pytorch:resnet50`
+
+During this hackathon, we developed the emotion and readability score microservice, which are available in this repository as well.
+
+The outcome of each microservice is, again, published to Kafka, and aggregated in the next stage.
+
+### Storing and semantically embedding content
+
+When the hard work is done, and the articles and tweets are analysed in detail, the results are uploaded to the database. The database that is selected is [Weaviate](https://weaviate.io), which is a so-called vector database. Basically, it not only stores your data, as so many other databases do too, but it first computes a word embedding using a multi-lingual BERT-based NLP transformer-service. This is done for the article as a whole, but also for each paragraph, which enables semantic search and Question & Answer.
+
+In the `infrastructure` folder, you see a complete setup for you to test: it contains the weaviate database service, the transformers for text _and_ images, and a Jupyter notebook service, so you can play with it yourself. Alternatively, you can query the database directly using GraphQL.
+
+### Analysing content
+
+In the final stage, the enriched content is presented to the analyst. A disinformation score is computed based on the computed NLP attributes and the relevancy of an article's content with respect to the current narrative. 
+
+## Implementation
+
+All services are running in Docker: for testing purposes, we run on one or two older Dell desktops with 32Gb but without GPU. All dockerized microservices and other services are connected through Apache Kafka using a single broker. 
+
+Only to communicate with the [Weaviate - vector search engine DB](https://weaviate.io/) is through REST.
+
+Weaviate is configured to vectorize text (i.e. create semantic word embeddings of the whole article and each paragraph), images (so we can recognize similar images), and it includes a Question & Answering service. The latter, for example, can be used to ask a question such as “Who is the current president of the US?”. However, more interestingly, it can also be used to verify the credibility of a news channel: define control questions that you know the answer of, and ask the channel to provide the answers. If there are many wrong answers, you can mark the news channel as untrustworthy.
+
+
+Open source services and NLP models that are used:
+- [Apache Kafka](https://kafka.apache.org/), [Zookeeper](https://zookeeper.apache.org/) and the [AVRO Schema Registry](https://hub.docker.com/r/confluentinc/cp-schema-registry): All based on the Community Edition supported by [Confluent](https://hub.docker.com/u/confluentinc),
+- Adapters to easily connect to Kafka in Python, [osint-python-test-bed-adapter](https://pypi.org/project/osint-python-test-bed-adapter/), and Node.js, [node-test-bed-adapter](https://www.npmjs.com/package/node-test-bed-adapter).
+- Emotion service, based on: [j-hartmann/emotion-english-distilroberta-base · Hugging Face](https://huggingface.co/j-hartmann/emotion-english-distilroberta-base).
+- Readability service, based on: [py-readability-metrics · PyPI](https://pypi.org/project/py-readability-metrics/)
+- Twitter service, based on: [snscrape · PyPI](https://pypi.org/project/snscrape).
+- NER service and keywords service, based on [spacy + English · spaCy Models Documentation](https://spacy.io/models/en) (same for other languages).
+- Summary service, based on [sentence-transformers/paraphrase-MiniLM-L6-v2 · Hugging Face](https://huggingface.co/sentence-transformers/paraphrase-MiniLM-L6-v2).
+- Translation service, using locally installed and standalone version of [LibreTranslate - Free and Open Source Machine Translation API](https://libretranslate.com/)
+- Language service, based on: [franc - npm (npmjs.com)](https://www.npmjs.com/package/franc),
+- PDF to tekst, based on: [PyMuPDF · PyPI](https://pypi.org/project/PyMuPDF/).
+- Topics service: [graphology-communities-louvain - npm (npmjs.com)](https://www.npmjs.com/package/graphology-communities-louvain).
+- Face recognition service, based on: [opencv-python · PyPI](https://pypi.org/project/opencv-python/).
+- Telegram service, based on [Telethon · PyPI](https://pypi.org/project/Telethon/).
+- Geo-service, based on [geopy · PyPI](https://pypi.org/project/geopy/).
+
+## Results
+
+Federated learning and sharing of annotations.
+
+## Conclusion and further research
