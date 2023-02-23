@@ -79,6 +79,7 @@ Besides federated analysis, the fact that analysist's feedback is stored back in
 ### Open source services and NLP models that are used
 
 - [Apache Kafka](https://kafka.apache.org/), [Zookeeper](https://zookeeper.apache.org/) and the [AVRO Schema Registry](https://hub.docker.com/r/confluentinc/cp-schema-registry): All based on the Community Edition supported by [Confluent](https://hub.docker.com/u/confluentinc),
+- GUI based on [csNext](https://github.com/TNOCS/csnext).
 - Adapters to easily connect to Kafka in Python, [osint-python-test-bed-adapter](https://pypi.org/project/osint-python-test-bed-adapter/), and Node.js, [node-test-bed-adapter](https://www.npmjs.com/package/node-test-bed-adapter).
 - Emotion service, based on: [j-hartmann/emotion-english-distilroberta-base · Hugging Face](https://huggingface.co/j-hartmann/emotion-english-distilroberta-base).
 - Readability service, based on: [py-readability-metrics · PyPI](https://pypi.org/project/py-readability-metrics/)
