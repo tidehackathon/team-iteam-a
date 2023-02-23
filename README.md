@@ -5,6 +5,7 @@
 Josep Borrell, High Representative/Vice-President, adequately described the problem as follows: _“We have to focus on foreign actors who intentionally, in a coordinated manner, try to manipulate our information environment. We need to work with democratic partners around the world to fight information manipulation by authoritarian regimes more actively. It is time to roll up our sleeves and defend democracy, both at home and around the world.”_ [source: FIMI](https://www.eeas.europa.eu/eeas/1st-eeas-report-foreign-information-manipulation-and-interference-threats_en). So, for this challenge, the focus is on calculating the credibility that a news article or social media message represents true information, and not disinformation.
 
 ## Methodology
+![image](https://user-images.githubusercontent.com/3140667/221019405-bf40d0d0-bd0a-4648-b18f-70644041f642.png)
 
 The approach that is followed can be split into 4 stages, and each stage is discussed in more detail below:
 
