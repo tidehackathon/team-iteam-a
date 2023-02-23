@@ -6,7 +6,6 @@ Josep Borrell, High Representative/Vice-President, adequately described the prob
 
 ## Methodology
 
-
 The methodology has been created by understanding the anatomy of disinformation and misinformation.
 
 ### Types of Misinformation and Disinformation
@@ -119,8 +118,19 @@ Besides federated analysis, the fact that analysist's feedback is stored back in
 - Telegram service, based on [Telethon · PyPI](https://pypi.org/project/Telethon/).
 - Geo-service, based on [geopy · PyPI](https://pypi.org/project/geopy/).
 
-## Results
+## Analyst Dashboard
 
-Federated learning and sharing of annotations.
+The analyst can search through the enriched articles, either via GraphQL or a Jupyter Notebook, but also through our own GUI.
 
-## Conclusion and further research
+![Search through relevant articles](https://user-images.githubusercontent.com/3140667/221023416-18c390d2-a56b-4be8-b281-3fd76463c714.png)
+
+![Examine a disinformation narrative](https://user-images.githubusercontent.com/3140667/221023754-1a674b23-f6c6-4d46-8065-cabcdbd06baf.png)
+
+![Explore the results in a cluster diagram](https://user-images.githubusercontent.com/3140667/221023885-79b70504-1277-403e-bab9-96e20575a556.png)
+
+![Or explore the results on the map](https://user-images.githubusercontent.com/3140667/221024044-4ad38a32-e912-40f7-9be8-0f5173aec901.png)
+
+
+
+
+
