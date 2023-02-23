@@ -56,18 +56,26 @@ In the `infrastructure` folder, you see a complete setup for you to test: it con
 
 ### Analysing content
 
-In the final stage, the enriched content is presented to the analyst. A disinformation score is computed based on the computed NLP attributes and the relevancy of an article's content with respect to the current narrative. 
+In the final stage, the enriched content is presented to the analyst. A disinformation score is computed based on the computed NLP attributes and the relevancy of an article's content with respect to the current narrative.
 
 ## Implementation
 
-All services are running in Docker: for testing purposes, we run on one or two older Dell desktops with 32Gb but without GPU. All dockerized microservices and other services are connected through Apache Kafka using a single broker. 
+Our implementation is a microservices-based architecture, where each microservice is connected to Apache Kafka. Kafka acts as the middleware _glue_, connecting all microservices, so they can easily exchange information between each other.
 
-Only to communicate with the [Weaviate - vector search engine DB](https://weaviate.io/) is through REST.
+To facilitate deployment, all services are running in Docker: for testing purposes, we run on one or two older Dell desktops with 32Gb but without GPU. All dockerized microservices and other services are connected through Apache Kafka using a single broker.
 
-Weaviate is configured to vectorize text (i.e. create semantic word embeddings of the whole article and each paragraph), images (so we can recognize similar images), and it includes a Question & Answering service. The latter, for example, can be used to ask a question such as “Who is the current president of the US?”. However, more interestingly, it can also be used to verify the credibility of a news channel: define control questions that you know the answer of, and ask the channel to provide the answers. If there are many wrong answers, you can mark the news channel as untrustworthy.
+Only communication to the [Weaviate - vector search engine DB](https://weaviate.io/) is through REST.
 
+Weaviate is configured to vectorize text (i.e. create semantic word embeddings of the whole article and each paragraph), images (so we can recognize similar images), and it includes a Question & Answering service. The latter, for example, can be used to ask a question such as “Who is the current president of the US?”. However, more interestingly, it could also be used to verify the credibility of a news channel: define control questions that you know the answer of, and ask the channel to provide the answers. If there are many wrong answers, you can mark the news channel as untrustworthy. And, of course, this could be automated too.
 
-Open source services and NLP models that are used:
+### Federated analysis & learning
+
+Although our research environment is running standalone, it could also run in a federated context, connecting different organisations. The scraped and enriched articles by organisation A can easily be shared with another Kafka cluster run by organisation B, so it doesn't need to scrape the same websites. In addition, analysist feedback, e.g. the credibility of a news channel or article, can also be shared through Kafka, improving the analysis capability of organisations.
+
+Besides federated analysis, the fact that analysist's feedback is stored back in the database, supports learning from examples. AI models can be trained to suggest other disinformation messages, similarly to [ASreview](https://asreview.nl/) that helps researchers quickly discover relevant articles from a list of articles.
+
+### Open source services and NLP models that are used
+
 - [Apache Kafka](https://kafka.apache.org/), [Zookeeper](https://zookeeper.apache.org/) and the [AVRO Schema Registry](https://hub.docker.com/r/confluentinc/cp-schema-registry): All based on the Community Edition supported by [Confluent](https://hub.docker.com/u/confluentinc),
 - Adapters to easily connect to Kafka in Python, [osint-python-test-bed-adapter](https://pypi.org/project/osint-python-test-bed-adapter/), and Node.js, [node-test-bed-adapter](https://www.npmjs.com/package/node-test-bed-adapter).
 - Emotion service, based on: [j-hartmann/emotion-english-distilroberta-base · Hugging Face](https://huggingface.co/j-hartmann/emotion-english-distilroberta-base).
