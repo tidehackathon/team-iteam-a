@@ -30,7 +30,7 @@ In addition to new and more sophisticated ways of manipulating content, there ar
 - Catfishing is a form of fraud where a person creates a sockpuppet or fake identity to target a particular victim on social media. It is common for romance scams on dating websites. It may be done for financial gain, to compromise a victim or as a form of trolling or wish fulfilment.
 Understanding the anatomy of fake news, people can detect if a news is true or false. To detect it people are advised to ask 10 questions:
 
-![image](https://user-images.githubusercontent.com/3140667/221019405-bf40d0d0-bd0a-4648-b18f-70644041f642.png)
+![10 questions to ask](https://user-images.githubusercontent.com/3140667/221019405-bf40d0d0-bd0a-4648-b18f-70644041f642.png)
 
 Therefore, the approach that is followed can be split into 4 stages, and each stage is discussed in more detail below:
 
@@ -49,11 +49,10 @@ Analysts are in the best position to determine what information sources contain 
 
 The provided dataset contains, for example, data from the provided CSVs, but also from TASS, [EMM (Europe Media Monitor)](https://emm.newsbrief.eu/NewsBrief/clusteredition/en/latest.html), Google News, New York Times, and several others.
 
-INCLUDE SCREENSHOT OF THE GUI WHERE YOU SPECIFY THE FEEDS
-
 When the relevant channels are specified, the configuration is published to Kafka, and the crawlers and scrapers start to collect content. In case of RSS feeds, the RSS crawlers first analyse the RSS feed for new content, and subsequently publish the new article links to Kafka. In the complete framework, there are many scrapers, e.g. for generic websites, dedicated websites, telegram, and twitter. The twitter service, that was developed during the hackathon, is available in the `twitter-service`, and it should provide an example of how easy it is to add a new service. Discovered content, be it text or images, are published by the scrapers to Kafka as well, so the content can be processed in the next stage.
 
 ### Processing content
+![Simplified sequence diagram of the pipeline](https://user-images.githubusercontent.com/3140667/221022136-1df44456-c6ac-4768-aed2-3b42a36ee1a3.png)
 
 When the article content is available, many NLP microservices start to work in parallel to enrich the retrieved articles. To name a few:
 
