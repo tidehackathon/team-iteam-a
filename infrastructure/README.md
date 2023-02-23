@@ -16,9 +16,143 @@ To run the hackathon environment, please start all services using Docker compose
 docker compose up -d
 ```
 
+Or you can use the provided scripts (`start`, `down`, `stop`).
+
 ## Install the data
 
-Import the data into Weaviate using the following command...
+The Weaviate data was backed up using the following command:
+
+```bash
+curl -X POST -H "Content-Type: application/json" -d '{ "id": "tide_hackathon_2023" }' http://localhost:8888/v1/backups/filesystem
+```
+
+To import the data into Weaviate use the following command:
+
+```bash
+curl -X POST -H "Content-Type: application/json" -d '{ "id": "tide_hackathon_2023" }' http://localhost:8888/v1/backups/filesystem
+```
+
+## Querying Weaviate using GraphQL
+
+- Open the [Weaviate console](http://localhost:8000)
+- Connect to Weaviate running on `http://localhost:8888`
+- Perform some GraphQL queries to get the data
+
+```graphql
+{
+  Get {
+    Article(
+      limit: 50
+      nearText: {
+        concepts: ["NATO is an aggressor"], 
+        moveAwayFrom: { concepts: ["EU"], force: 1 }
+      }
+    ) {
+      title
+      text
+      created
+      sourceId
+      # metadata
+      hasChannel {
+        ... on Channel {
+          name
+          affiliation
+          credibility
+          influence
+          type
+          orientation
+          kgId
+          _additional {
+            id
+          }
+        }
+      }
+      hasMediaItems {
+        ... on MediaItem {
+          contentType
+          _additional {
+            id
+          }
+          # metadata
+          alt
+          height
+          width
+          url
+        }
+      }
+      original
+      originalLanguage
+      sourceId
+      entities
+      feedId
+      language
+      readability
+      languageFlags
+      type
+      pub_date
+      url
+      updated
+      annotations
+      commentsCount
+      dislikesCount
+      likesCount
+      viewsCount
+      sharesCount
+      history
+      version
+      fear
+      joy
+      readability
+      cred
+      disinfoType
+      anger
+      surprise
+      storyId
+      storyCount
+      cred
+      credMan
+      sadness
+      sarcasm
+      _additional {
+        id
+        distance
+        lastUpdateTimeUnix
+        creationTimeUnix
+        featureProjection {
+          vector
+          __typename
+        }
+      }
+    }
+  }
+}
+```
+
+Since the Q&A module has been installed, you can also ask it questions, e.g.
+
+```graphql
+{
+  Get {
+    Article(
+      ask: {
+        question: "Who held a speech in Poland?", 
+        properties: ["title", "text"]
+      }
+    ) {
+      title
+      _additional {
+        answer {
+          hasAnswer
+          property
+          result
+          startPosition
+          endPosition
+        }
+      }
+    }
+  }
+}
+```
 
 ## Backups
 
