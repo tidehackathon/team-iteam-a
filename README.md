@@ -10,7 +10,7 @@ The methodology has been created by understanding the anatomy of disinformation 
 
 ### Types of Misinformation and Disinformation
 
-- Fabricated Content:  false content;
+- Fabricated Content: false content;
 - Manipulated Content: Genuine information or imagery that has been distorted, e.g. a sensational headline or populist ‘click bait’;
 - Imposter Content: Impersonation of genuine sources, e.g. using the branding of an established agency;
 - Misleading Content: Misleading information, e.g. comment presented as fact;
@@ -44,6 +44,8 @@ Subsequently, the results are explained. Based on the data in this repository, a
 
 ### Collecting content
 
+![Simplified pipeline](https://user-images.githubusercontent.com/3140667/221025339-e70e38e6-0cdd-4325-a75b-c7ae9d5b6d0e.png)
+
 Analysts are in the best position to determine what information sources contain the most relevant content: RSS feeds, websites, telegram channels, twitter hashtags, etc. They can specify them in the GUI (not included), including their refresh rate. Alternatively, they can upload their own URLs manually or via a script.
 
 The provided dataset contains, for example, data from the provided CSVs, but also from TASS, [EMM (Europe Media Monitor)](https://emm.newsbrief.eu/NewsBrief/clusteredition/en/latest.html), Google News, New York Times, and several others.
@@ -55,7 +57,7 @@ When the relevant channels are specified, the configuration is published to Kafk
 
 When the article content is available, many NLP microservices start to work in parallel to enrich the retrieved articles. To name a few:
 
-- Language detection & translation using FRENK and LibreTranslate
+- Language detection & translation using Franc and LibreTranslate
 - Summarizing
 - Named Entity Recognition (+keywords)
 - Geo-tagging
@@ -64,7 +66,7 @@ When the article content is available, many NLP microservices start to work in p
 - Readability score
 - Sarcasm/joke score
 - Topic detection: Louvain algorithm
-- Channel affiliation & credibility: NATO list?
+- Channel affiliation & credibility
 - Semantic word embeddings in Weaviate: `semitechnologies/transformers-inference:sentence-transformers-paraphrase-multilingual-mpnet-base-v2`
 - Semantic image embeddings in Weaviate: `semitechnologies/img2vec-pytorch:resnet50`
 
@@ -80,7 +82,10 @@ In the `infrastructure` folder, you see a complete setup for you to test: it con
 
 ### Analysing content
 
-In the final stage, the enriched content is presented to the analyst. A disinformation score is computed based on the computed NLP attributes and the relevancy of an article's content with respect to the current narrative.
+In the final stage, the enriched content is presented to the analyst. A disinformation score is computed based on the computed NLP attributes and the relevancy of an article's content with respect to the current narrative. The analyst can query it using GraphQL or Jupyter Notebooks. See the examples in the folders `infrastructure`, to get everything running locally, and `Jupyter-Weaviate-interface` to build the Jupyter notebook.
+
+![Example of the Weaviate GraphQL interface](https://user-images.githubusercontent.com/3140667/221025672-a4677ae0-ab86-4a6d-8a90-e11b78ecc683.png)
+![Example of a Jupyter Notebook](https://user-images.githubusercontent.com/3140667/221025686-3074ec09-46bc-4e73-bfc5-b94981e0fe8d.png)
 
 ## Implementation
 
@@ -97,6 +102,8 @@ In the GUI, all saved articles are stored inside a knowledge graph, so we can do
 ### Federated analysis & learning
 
 Although our research environment is running standalone, it could also run in a federated context, connecting different organisations. The scraped and enriched articles by organisation A can easily be shared with another Kafka cluster run by organisation B, so it doesn't need to scrape the same websites. In addition, analysist feedback, e.g. the credibility of a news channel or article, can also be shared through Kafka, improving the analysis capability of organisations.
+
+![image](https://user-images.githubusercontent.com/3140667/221024773-ee9221af-6148-41c9-bc28-33fa59c3bd94.png)
 
 Besides federated analysis, the fact that analysist's feedback is stored back in the database, supports learning from examples. AI models can be trained to suggest other disinformation messages, similarly to [ASreview](https://asreview.nl/) that helps researchers quickly discover relevant articles from a list of articles.
 
@@ -118,7 +125,7 @@ Besides federated analysis, the fact that analysist's feedback is stored back in
 - Telegram service, based on [Telethon · PyPI](https://pypi.org/project/Telethon/).
 - Geo-service, based on [geopy · PyPI](https://pypi.org/project/geopy/).
 
-## Analyst Dashboard
+## Screenshots from the Analyst Dashboard
 
 The analyst can search through the enriched articles, either via GraphQL or a Jupyter Notebook, but also through our own GUI.
 
