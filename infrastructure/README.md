@@ -1,47 +1,24 @@
-# Introduction
+# Infrastructure
 
-This folder contains a single `docker-compose` files, allowing you to run an OSINT track either:
+As mentioned in the general introduction, we are sharing the environment that we used for our hackathon, that is the Weaviate DB including the collected data. With it, you can either query the Weaviate DB directly using GraphQL, or by using a Jupyter notebook.
 
-- Locally: make sure to edit the `.env` file (see `.env_example`) first.
-- Run `./start.sh`. Stop with `./stop.sh` or `./down.sh`.
+The dashboard GUI, which is under development, isn't shared, nor is the whole pipeline. Please contact us if you are interested to learn more.
 
-## Environment variables
+## Prerequisite
 
-### `HOST`
+As a prerequisite, build the `jupyter-weaviate-interface`.
 
-Please copy `.env_example` to `.env` and set the HOST IP address or localhost appropriately. The docker compose will read from this file and substitute the variables in your script.
+## Run the environment
 
-### `BROKER` and `SCHEMA` registry
-
-Set the location of the Kafka broker and schema registry.
+To run the hackathon environment, please start all services using Docker compose, either via the Docker GUI or the command line:
 
 ```bash
-# When Kafka is part of the docker compose
-BROKER=broker:29092
-SCHEMA=http://schema-registry:8081
+docker compose up -d
 ```
 
-```bash
-# When Kafka is externally hosted
-BROKER=134.221.20.203:3501
-SCHEMA=http://134.221.20.203:3502
-```
+## Install the data
 
-### `COMPOSE_PROFILES`
-
-It also includes [profiles](https://docs.docker.com/compose/profiles/) to selectively run some services. E.g. the profile
-
-- `server`: is for starting Telegram on the server
-- `lt` for starting the Lithuanian services
-- `translate` for starting the Translation services and LibreTranslate.
-- `jupyter` for starting the Jupyter notebook: note that you should not expose this application to the outside world, as it will be exploited.
-- `pdf` for starting the PDF service
-
-Multiple profiles can be specified by passing multiple --profile flags or a comma-separated list for the `COMPOSE_PROFILES` environment variable. E.g. to start the system on the server, set the `.env` to contain
-
-```bash
-COMPOSE_PROFILES=server,lt,translate
-```
+Import the data into Weaviate using the following command...
 
 ## Backups
 

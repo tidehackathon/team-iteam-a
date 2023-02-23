@@ -54,11 +54,12 @@ services:
       - 8000:80
 
   # To reset notebooks run: docker volume rm osint_notebooks
+  # NOTE, you need to first build this docker image yourself, see the repo.
   jupyter:
     container_name: osint_jupyter
     profiles: ["jupyter"]
     restart: unless-stopped
-    image: ci.tno.nl/osint1/jupyter-weaviate-interface:main
+    image: jupyter-weaviate-interface
     depends_on:
       - broker
       - schema-registry
