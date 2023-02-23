@@ -23,14 +23,16 @@ Or you can use the provided scripts (`start`, `down`, `stop`).
 The Weaviate data was backed up using the following command:
 
 ```bash
-curl -X POST -H "Content-Type: application/json" -d '{ "id": "tide_hackathon_2023" }' http://localhost:8888/v1/backups/filesystem
+curl -X POST -H "Content-Type: application/json" -d '{ "id": "2023_nato_tide_hackathon" }' http://localhost:8888/v1/backups/filesystem
 ```
 
-To import the data into Weaviate use the following command:
+To import the data into Weaviate, unzip the data file `2023_nato_tide_hackathon.7z` in the folder `./weaviate_backup`, and use the following command to restore it:
 
 ```bash
-curl -X POST -H "Content-Type: application/json" -d '{ "id": "tide_hackathon_2023" }' http://localhost:8888/v1/backups/filesystem
+curl -X POST -H "Content-Type: application/json" -d '{ "id": "2023_nato_tide_hackathon" }' http://localhost:8888/v1/backups/filesystem/2023_nato_tide_hackathon/restore
 ```
+
+Run it preferably from a bash prompt, as I had some problems running the `curl` command in a Windows command shell.
 
 ## Querying Weaviate using GraphQL
 
@@ -42,7 +44,7 @@ curl -X POST -H "Content-Type: application/json" -d '{ "id": "tide_hackathon_202
 {
   Get {
     Article(
-      limit: 50
+      limit: 10
       nearText: {
         concepts: ["NATO is an aggressor"], 
         moveAwayFrom: { concepts: ["EU"], force: 1 }
