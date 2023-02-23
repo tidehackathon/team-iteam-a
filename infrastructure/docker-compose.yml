@@ -47,6 +47,11 @@ services:
     image: semitechnologies/img2vec-pytorch:resnet50
     environment:
       ENABLE_CUDA: "0"
+  weaviate-console:
+    container_name: weaviate_console
+    image: semitechnologies/weaviate-console:latest
+    ports:
+      - 8000:80
 
   # To reset notebooks run: docker volume rm osint_notebooks
   jupyter:
