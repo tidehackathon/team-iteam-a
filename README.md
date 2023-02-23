@@ -68,6 +68,8 @@ Only communication to the [Weaviate - vector search engine DB](https://weaviate.
 
 Weaviate is configured to vectorize text (i.e. create semantic word embeddings of the whole article and each paragraph), images (so we can recognize similar images), and it includes a Question & Answering service. The latter, for example, can be used to ask a question such as “Who is the current president of the US?”. However, more interestingly, it could also be used to verify the credibility of a news channel: define control questions that you know the answer of, and ask the channel to provide the answers. If there are many wrong answers, you can mark the news channel as untrustworthy. And, of course, this could be automated too.
 
+In the GUI, all saved articles are stored inside a knowledge graph, so we can do graph queries too.  
+
 ### Federated analysis & learning
 
 Although our research environment is running standalone, it could also run in a federated context, connecting different organisations. The scraped and enriched articles by organisation A can easily be shared with another Kafka cluster run by organisation B, so it doesn't need to scrape the same websites. In addition, analysist feedback, e.g. the credibility of a news channel or article, can also be shared through Kafka, improving the analysis capability of organisations.
